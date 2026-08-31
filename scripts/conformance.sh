@@ -14,7 +14,7 @@ now_ms() { date +%s%3N; }
 canonical_digest() {
   local path=$1
   local field=$2
-  jq -cS --arg field "$field" '.[ $field ] = ""' "$path" | sha256sum | awk '{print "sha256:" $1}'
+  jq -cSj --arg field "$field" '.[ $field ] = ""' "$path" | sha256sum | awk '{print "sha256:" $1}'
 }
 
 source_digest=$("$bin" digest --source-root "$source")
