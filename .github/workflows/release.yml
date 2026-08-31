@@ -41,9 +41,16 @@ jobs:
           run="$RUNNER_TEMP/gooo-change-bundle-release"
           mkdir -p "$run"
           go vet ./...
-          go test -json ./... > "$run/test-events.json"
-          go build -o "$run/gooo-change-bundle" ./cmd/gooo-change-bundle
-          BUILD_WALL_MS=0 TEST_WALL_MS=0 BUILD_RSS_KIB=0 TEST_RSS_KIB=0 \
+          start=$(date +%s%3N)
+          /usr/bin/time -f '%M' -o "$run/build-rss" go build -o "$run/gooo-change-bundle" ./cmd/gooo-change-bundle
+          end=$(date +%s%3N)
+          build_wall_ms=$((end-start))
+          start=$(date +%s%3N)
+          /usr/bin/time -f '%M' -o "$run/test-rss" go test -json ./... > "$run/test-events.json"
+          end=$(date +%s%3N)
+          test_wall_ms=$((end-start))
+          BUILD_WALL_MS="$build_wall_ms" TEST_WALL_MS="$test_wall_ms" \
+            BUILD_RSS_KIB="$(cat "$run/build-rss")" TEST_RSS_KIB="$(cat "$run/test-rss")" \
             bash scripts/conformance.sh "$run/gooo-change-bundle" "$run"
           tar --exclude=.git -czf "$run/gooo-change-bundle-v0.1.0.tar.gz" .
           tar -czf "$run/gooo-change-bundle-ci-v0.1.0.tar.gz" -C "$run" ci-metrics.json bundle-one
@@ -56,12 +63,12 @@ jobs:
           metrics_asset="$run/ci-metrics.json"
           jq -n \
             --arg schema 'gooo/change-bundle/release-manifest/v1' \
-            --arg tag "$GITHUB_REF_NAME" --arg commit "$commit" --arg tag_object "$tag_object" \
+            --arg tag "$release_tag" --arg commit "$commit" --arg tag_object "$tag_object" \
             --arg source_digest "sha256:$(sha256sum "$source_asset" | awk '{print $1}')" --argjson source_bytes "$(stat -c '%s' "$source_asset")" \
             --arg ci_digest "sha256:$(sha256sum "$ci_asset" | awk '{print $1}')" --argjson ci_bytes "$(stat -c '%s' "$ci_asset")" \
             --arg metrics_digest "sha256:$(sha256sum "$metrics_asset" | awk '{print $1}')" --argjson metrics_bytes "$(stat -c '%s' "$metrics_asset")" \
             '{schema:$schema,tag:$tag,commit:$commit,annotated_tag_object:$tag_object,assets:[{path:"gooo-change-bundle-v0.1.0.tar.gz",bytes:$source_bytes,digest:$source_digest},{path:"gooo-change-bundle-ci-v0.1.0.tar.gz",bytes:$ci_bytes,digest:$ci_digest},{path:"ci-metrics.json",bytes:$metrics_bytes,digest:$metrics_digest}],authority:{repository_writes:0,local_test_executions:0,cross_project_required_gates:0}}' > "$run/release-manifest.json"
-          sha256sum "$source_asset" "$ci_asset" "$metrics_asset" "$run/release-manifest.json" > "$run/SHA256SUMS"
+          (cd "$run" && sha256sum "$(basename "$source_asset")" "$(basename "$ci_asset")" "$(basename "$metrics_asset")" release-manifest.json) > "$run/SHA256SUMS"
       - name: Publish immutable release assets
         uses: softprops/action-gh-release@v2
         with:
@@ -70,6 +77,7 @@ jobs:
           prerelease: false
           make_latest: true
           generate_release_notes: false
+          overwrite_files: true
           files: |
             ${{ runner.temp }}/gooo-change-bundle-release/gooo-change-bundle-v0.1.0.tar.gz
             ${{ runner.temp }}/gooo-change-bundle-release/gooo-change-bundle-ci-v0.1.0.tar.gz
