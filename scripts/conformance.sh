@@ -7,6 +7,7 @@ repo_root=$(pwd)
 source="$run/source"
 bundle_one="$run/bundle-one"
 bundle_two="$run/bundle-two"
+bundle_refuted="$run/bundle-refuted"
 mkdir -p "$source"
 cp -R fixtures/source-tree/. "$source/"
 
@@ -60,11 +61,21 @@ conformance_wall_ms=$((end-start))
   --authority "$authority" --intent "$intent" \
   --contract contracts/change-bundle-denominator-v1.json --out "$bundle_two" > "$run/materialize-two.json"
 
+platform_observation="$run/platform-observation.json"
+cp fixtures/platform-release-v0.1.0-refuted.json "$platform_observation"
+mkdir -p "$bundle_refuted"
+"$bin" materialize \
+  --source-root "$source" --source-digest "$source_digest" --proposal "$proposal" \
+  --authority "$authority" --intent "$intent" \
+  --contract contracts/change-bundle-denominator-v1.json --observation "$platform_observation" --out "$bundle_refuted" > "$run/materialize-refuted.json"
+
 jq -e '.decision == "CLOSED" and .metrics.repository_writes == 0 and .metrics.local_test_executions == 0 and .metrics.cross_project_required_gates == 0 and .metrics.replay_mismatches == 0 and .metrics.rollback_mismatches == 0' "$bundle_one/bundle-manifest.json" >/dev/null
 diff -ru "$bundle_one" "$bundle_two" >/dev/null
+jq -e '.decision == "REFUTED" and (.findings | any(.[]; .code == "EXTERNAL_IMMUTABILITY_CONTRADICTION" and .path == "github://kimjooyoon/gooo-change-bundle/releases/tag/v0.1.0")) and .metrics.changed_paths == 1 and .metrics.changed_hunks == 1 and .metrics.replay_mismatches == 0 and .metrics.rollback_mismatches == 1' "$bundle_refuted/bundle-manifest.json" >/dev/null
 jq -e '[.cases[] | select(.class == "NORMAL")] | length >= 3' fixtures/scenarios.json >/dev/null
 jq -e '[.cases[] | select(.class == "UNKNOWN")] | length >= 3' fixtures/scenarios.json >/dev/null
 jq -e '[.cases[] | select(.class == "REFUTED")] | length >= 3' fixtures/scenarios.json >/dev/null
+jq -e '.external_precedence.authoritative_source == "github_api_immutable" and .external_precedence.non_authoritative_source == "self_authored_manifest" and any(.cases[]; .id == "refuted-platform-immutability" and .path == "github://kimjooyoon/gooo-change-bundle/releases/tag/v0.1.0")' fixtures/scenarios.json >/dev/null
 
 bundle_files=$(find "$bundle_one" -type f -print | wc -l | tr -d ' ')
 bundle_bytes=$(find "$bundle_one" -type f -printf '%s\n' | awk '{sum += $1} END {print sum + 0}')

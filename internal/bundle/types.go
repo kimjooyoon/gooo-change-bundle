@@ -1,31 +1,32 @@
 package bundle
 
 const (
-	SourceSchema       = "gooo/change-bundle/source/v1"
-	ContractSchema     = "gooo/change-bundle/denominator/v1"
-	ProposalSchema     = "gooo/change-bundle/approved-proposal/v1"
-	AuthoritySchema    = "gooo/change-bundle/authority-receipt/v1"
-	TreeManifestSchema = "gooo/change-bundle/tree-manifest/v1"
-	IRSchema           = "gooo/change-bundle/semantic-ir/v1"
-	BundleSchema       = "gooo/change-bundle/manifest/v1"
-	PreconditionSchema = "gooo/change-bundle/apply-precondition/v1"
-	ReplaySchema       = "gooo/change-bundle/replay/v1"
-	MetricsSchema      = "gooo/change-bundle/metrics/v1"
-	FixedCells         = 12
-	FixedActivities    = 12
-	EmptyFileDigest    = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
-	DecisionClosed     = "CLOSED"
-	DecisionUnknown    = "UNKNOWN"
-	DecisionRefuted    = "REFUTED"
-	OperationAdd       = "ADD"
-	OperationModify    = "MODIFY"
-	OperationDelete    = "DELETE"
-	ProofFoundation    = "FOUNDATION"
-	ProofCoherence     = "COHERENCE"
-	ProofRegression    = "REGRESSION"
-	IndicatorDriver    = "DRIVER"
-	IndicatorOutcome   = "OUTCOME"
-	IndicatorGuardrail = "GUARDRAIL"
+	SourceSchema              = "gooo/change-bundle/source/v1"
+	ContractSchema            = "gooo/change-bundle/denominator/v1"
+	ProposalSchema            = "gooo/change-bundle/approved-proposal/v1"
+	AuthoritySchema           = "gooo/change-bundle/authority-receipt/v1"
+	TreeManifestSchema        = "gooo/change-bundle/tree-manifest/v1"
+	IRSchema                  = "gooo/change-bundle/semantic-ir/v1"
+	BundleSchema              = "gooo/change-bundle/manifest/v1"
+	PreconditionSchema        = "gooo/change-bundle/apply-precondition/v1"
+	ReplaySchema              = "gooo/change-bundle/replay/v1"
+	MetricsSchema             = "gooo/change-bundle/metrics/v1"
+	PlatformObservationSchema = "gooo/change-bundle/platform-observation/v1"
+	FixedCells                = 12
+	FixedActivities           = 12
+	EmptyFileDigest           = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+	DecisionClosed            = "CLOSED"
+	DecisionUnknown           = "UNKNOWN"
+	DecisionRefuted           = "REFUTED"
+	OperationAdd              = "ADD"
+	OperationModify           = "MODIFY"
+	OperationDelete           = "DELETE"
+	ProofFoundation           = "FOUNDATION"
+	ProofCoherence            = "COHERENCE"
+	ProofRegression           = "REGRESSION"
+	IndicatorDriver           = "DRIVER"
+	IndicatorOutcome          = "OUTCOME"
+	IndicatorGuardrail        = "GUARDRAIL"
 )
 
 type Authority struct {
@@ -53,27 +54,35 @@ type Activity struct {
 	Edge           string `json:"edge"`
 }
 
+type PlatformPrecedence struct {
+	AuthoritativeSource    string `json:"authoritative_source"`
+	NonAuthoritativeSource string `json:"non_authoritative_source"`
+	RefutedWhen            string `json:"refuted_when"`
+}
+
 type Intent struct {
-	Schema        string     `json:"schema"`
-	Version       string     `json:"version"`
-	DenominatorID string     `json:"denominator_id"`
-	CellCount     int        `json:"cell_count"`
-	Precedence    []string   `json:"precedence"`
-	UnknownFields []string   `json:"unknown_fields"`
-	Authority     Authority  `json:"authority"`
-	Activities    []Activity `json:"activities"`
-	SourceDigest  string     `json:"source_digest"`
+	Schema             string             `json:"schema"`
+	Version            string             `json:"version"`
+	DenominatorID      string             `json:"denominator_id"`
+	CellCount          int                `json:"cell_count"`
+	Precedence         []string           `json:"precedence"`
+	UnknownFields      []string           `json:"unknown_fields"`
+	Authority          Authority          `json:"authority"`
+	PlatformPrecedence PlatformPrecedence `json:"platform_precedence"`
+	Activities         []Activity         `json:"activities"`
+	SourceDigest       string             `json:"source_digest"`
 }
 
 type Contract struct {
-	Schema           string         `json:"schema"`
-	ID               string         `json:"id"`
-	Version          string         `json:"version"`
-	CellCount        int            `json:"cell_count"`
-	Fixed            bool           `json:"fixed"`
-	ProofBuckets     map[string]int `json:"proof_buckets"`
-	IndicatorBuckets map[string]int `json:"indicator_buckets"`
-	Activities       []Activity     `json:"activities"`
+	Schema             string             `json:"schema"`
+	ID                 string             `json:"id"`
+	Version            string             `json:"version"`
+	CellCount          int                `json:"cell_count"`
+	Fixed              bool               `json:"fixed"`
+	ProofBuckets       map[string]int     `json:"proof_buckets"`
+	IndicatorBuckets   map[string]int     `json:"indicator_buckets"`
+	PlatformPrecedence PlatformPrecedence `json:"platform_precedence"`
+	Activities         []Activity         `json:"activities"`
 }
 
 type Hunk struct {
@@ -198,18 +207,19 @@ type Metrics struct {
 }
 
 type IR struct {
-	Schema                 string     `json:"schema"`
-	Version                string     `json:"version"`
-	DenominatorID          string     `json:"denominator_id"`
-	CellCount              int        `json:"cell_count"`
-	SourceDigest           string     `json:"source_digest"`
-	IntentDigest           string     `json:"intent_digest"`
-	ProposalDigest         string     `json:"proposal_digest"`
-	AuthorityReceiptDigest string     `json:"authority_receipt_digest"`
-	Precedence             []string   `json:"precedence"`
-	UnknownFields          []string   `json:"unknown_fields"`
-	Activities             []Activity `json:"activities"`
-	Authority              Authority  `json:"authority"`
+	Schema                 string             `json:"schema"`
+	Version                string             `json:"version"`
+	DenominatorID          string             `json:"denominator_id"`
+	CellCount              int                `json:"cell_count"`
+	SourceDigest           string             `json:"source_digest"`
+	IntentDigest           string             `json:"intent_digest"`
+	ProposalDigest         string             `json:"proposal_digest"`
+	AuthorityReceiptDigest string             `json:"authority_receipt_digest"`
+	Precedence             []string           `json:"precedence"`
+	UnknownFields          []string           `json:"unknown_fields"`
+	PlatformPrecedence     PlatformPrecedence `json:"platform_precedence"`
+	Activities             []Activity         `json:"activities"`
+	Authority              Authority          `json:"authority"`
 }
 
 type PreconditionReceipt struct {

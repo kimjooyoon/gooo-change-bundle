@@ -65,6 +65,13 @@ func ParseIntent(path string) (Intent, error) {
 				return Intent{}, fmt.Errorf("line %d: invalid unknown_fields", lineNumber)
 			}
 			intent.UnknownFields = strings.Split(fields[1], ",")
+		case "platform_precedence":
+			if valueErr != nil {
+				return Intent{}, valueErr
+			}
+			intent.PlatformPrecedence = PlatformPrecedence{
+				AuthoritativeSource: values["authoritative_source"], NonAuthoritativeSource: values["non_authoritative_source"], RefutedWhen: values["refuted_when"],
+			}
 		case "activity":
 			if valueErr != nil {
 				return Intent{}, valueErr
@@ -112,6 +119,11 @@ func ValidateDeclarations(intent Intent, contract Contract) error {
 	}
 	if !intent.Authority.IsZero() {
 		return fmt.Errorf("intent authority must be zero")
+	}
+	if intent.PlatformPrecedence != contract.PlatformPrecedence || intent.PlatformPrecedence != (PlatformPrecedence{
+		AuthoritativeSource: "github_api_immutable", NonAuthoritativeSource: "self_authored_manifest", RefutedWhen: "external_false_self_authored_true",
+	}) {
+		return fmt.Errorf("external platform immutability precedence mismatch")
 	}
 	if len(intent.Activities) != FixedActivities || len(contract.Activities) != FixedActivities {
 		return fmt.Errorf("exactly twelve activities are required")

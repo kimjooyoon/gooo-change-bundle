@@ -12,9 +12,20 @@ import (
 )
 
 type observation struct {
-	SourceTreeObservable bool     `json:"source_tree_observable"`
-	DirectMissing        []string `json:"direct_missing"`
-	DependencyBlocked    []string `json:"dependency_blocked"`
+	SourceTreeObservable bool                        `json:"source_tree_observable"`
+	DirectMissing        []string                    `json:"direct_missing"`
+	DependencyBlocked    []string                    `json:"dependency_blocked"`
+	PlatformRelease      *platformReleaseObservation `json:"platform_release,omitempty"`
+}
+
+type platformReleaseObservation struct {
+	Schema                string `json:"schema"`
+	Provider              string `json:"provider"`
+	Repository            string `json:"repository"`
+	Tag                   string `json:"tag"`
+	ReleaseID             int64  `json:"release_id"`
+	ExternalImmutable     bool   `json:"external_immutable"`
+	SelfAuthoredImmutable bool   `json:"self_authored_immutable"`
 }
 
 type patchOperation struct {
@@ -301,6 +312,14 @@ func validateObservation(path string) []Finding {
 	if !value.SourceTreeObservable {
 		findings = append(findings, unknownFinding("OBSERVATION_UNAVAILABLE", "OBSERVATION", "OBSERVE_SOURCE_TREE", "observation_unavailable", "MAKE_SOURCE_TREE_OBSERVABLE", []string{"source_tree"}, "source tree observation was declared unavailable"))
 	}
+	if value.PlatformRelease != nil {
+		release := value.PlatformRelease
+		if release.Schema != PlatformObservationSchema || release.Provider != "github" || release.Repository == "" || release.Tag == "" || release.ReleaseID <= 0 {
+			findings = append(findings, refutedFinding("PLATFORM_OBSERVATION_MALFORMED", "platform_release", "GitHub platform observation is missing its exact release identity"))
+		} else if !release.ExternalImmutable && release.SelfAuthoredImmutable {
+			findings = append(findings, refutedFinding("EXTERNAL_IMMUTABILITY_CONTRADICTION", "github://"+release.Repository+"/releases/tag/"+release.Tag, fmt.Sprintf("GitHub API release %d reports immutable=false; the self-authored manifest claim immutable=true is non-authoritative", release.ReleaseID)))
+		}
+	}
 	return findings
 }
 
@@ -578,7 +597,7 @@ func buildArtifacts(intent Intent, proposal Proposal, authority AuthorityReceipt
 	}
 	files["patch.diff"] = []byte(renderPatchText(patch))
 	files["rollback.diff"] = []byte(renderPatchText(rollback))
-	ir := IR{Schema: IRSchema, Version: "v1", DenominatorID: intent.DenominatorID, CellCount: intent.CellCount, SourceDigest: optionsDigest(snapshot), IntentDigest: intent.SourceDigest, ProposalDigest: proposal.ProposalDigest, AuthorityReceiptDigest: authority.ReceiptDigest, Precedence: intent.Precedence, UnknownFields: intent.UnknownFields, Activities: intent.Activities, Authority: Authority{}}
+	ir := IR{Schema: IRSchema, Version: "v1", DenominatorID: intent.DenominatorID, CellCount: intent.CellCount, SourceDigest: optionsDigest(snapshot), IntentDigest: intent.SourceDigest, ProposalDigest: proposal.ProposalDigest, AuthorityReceiptDigest: authority.ReceiptDigest, Precedence: intent.Precedence, UnknownFields: intent.UnknownFields, PlatformPrecedence: intent.PlatformPrecedence, Activities: intent.Activities, Authority: Authority{}}
 	if data, err := jsonBytes(ir); err != nil {
 		return nil, err
 	} else {

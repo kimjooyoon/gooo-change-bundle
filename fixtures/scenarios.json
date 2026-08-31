@@ -1,18 +1,18 @@
 {
   "schema": "gooo/change-bundle/fixture-oracle/v1",
+  "external_precedence": {"authoritative_source":"github_api_immutable","non_authoritative_source":"self_authored_manifest","refuted_case":"refuted-platform-immutability"},
   "cases": [
-    {"id":"normal-modify","class":"NORMAL","expected":"CLOSED"},
-    {"id":"normal-add","class":"NORMAL","expected":"CLOSED"},
-    {"id":"normal-delete","class":"NORMAL","expected":"CLOSED"},
-    {"id":"unknown-direct-missing","class":"UNKNOWN","expected":"UNKNOWN"},
-    {"id":"unknown-source-unobservable","class":"UNKNOWN","expected":"UNKNOWN"},
-    {"id":"unknown-dependency-blocked","class":"UNKNOWN","expected":"UNKNOWN"},
-    {"id":"refuted-stale-preimage","class":"REFUTED","expected":"REFUTED"},
-    {"id":"refuted-path-traversal","class":"REFUTED","expected":"REFUTED"},
-    {"id":"refuted-symlink-escape","class":"REFUTED","expected":"REFUTED"},
-    {"id":"refuted-generated-file-authority","class":"REFUTED","expected":"REFUTED"},
-    {"id":"refuted-conflicting-hunks","class":"REFUTED","expected":"REFUTED"},
-    {"id":"refuted-unauthorized-or-rollback","class":"REFUTED","expected":"REFUTED"}
+    {"id":"normal-modify","class":"NORMAL","expected":"CLOSED","changed_paths":1,"changed_hunks":1,"replay_comparisons":13,"replay_mismatches":0,"rollback_comparisons":1,"rollback_mismatches":0},
+    {"id":"normal-add","class":"NORMAL","expected":"CLOSED","changed_paths":1,"changed_hunks":1,"replay_comparisons":13,"replay_mismatches":0,"rollback_comparisons":1,"rollback_mismatches":0},
+    {"id":"normal-delete","class":"NORMAL","expected":"CLOSED","changed_paths":1,"changed_hunks":1,"replay_comparisons":13,"replay_mismatches":0,"rollback_comparisons":1,"rollback_mismatches":0},
+    {"id":"unknown-direct-missing","class":"UNKNOWN","expected":"UNKNOWN","changed_paths":1,"changed_hunks":1,"replay_comparisons":13,"replay_mismatches":0,"rollback_comparisons":1,"rollback_mismatches":1},
+    {"id":"unknown-source-unobservable","class":"UNKNOWN","expected":"UNKNOWN","changed_paths":1,"changed_hunks":1,"replay_comparisons":13,"replay_mismatches":0,"rollback_comparisons":1,"rollback_mismatches":1},
+    {"id":"unknown-dependency-blocked","class":"UNKNOWN","expected":"UNKNOWN","changed_paths":1,"changed_hunks":1,"replay_comparisons":13,"replay_mismatches":0,"rollback_comparisons":1,"rollback_mismatches":1},
+    {"id":"refuted-stale-preimage","class":"REFUTED","expected":"REFUTED","changed_paths":1,"changed_hunks":1,"replay_comparisons":13,"replay_mismatches":0,"rollback_comparisons":1,"rollback_mismatches":1},
+    {"id":"refuted-path-traversal","class":"REFUTED","expected":"REFUTED","changed_paths":1,"changed_hunks":1,"replay_comparisons":13,"replay_mismatches":0,"rollback_comparisons":1,"rollback_mismatches":1},
+    {"id":"refuted-symlink-escape","class":"REFUTED","expected":"REFUTED","changed_paths":1,"changed_hunks":1,"replay_comparisons":13,"replay_mismatches":0,"rollback_comparisons":1,"rollback_mismatches":1},
+    {"id":"refuted-generated-file-authority","class":"REFUTED","expected":"REFUTED","changed_paths":1,"changed_hunks":1,"replay_comparisons":13,"replay_mismatches":0,"rollback_comparisons":1,"rollback_mismatches":1},
+    {"id":"refuted-conflicting-hunks","class":"REFUTED","expected":"REFUTED","changed_paths":1,"changed_hunks":2,"replay_comparisons":13,"replay_mismatches":0,"rollback_comparisons":1,"rollback_mismatches":1},
+    {"id":"refuted-platform-immutability","class":"REFUTED","expected":"REFUTED","path":"github://kimjooyoon/gooo-change-bundle/releases/tag/v0.1.0","changed_paths":1,"changed_hunks":1,"replay_comparisons":13,"replay_mismatches":0,"rollback_comparisons":1,"rollback_mismatches":1}
   ]
 }
-

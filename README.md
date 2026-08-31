@@ -51,13 +51,20 @@ Every `UNKNOWN` retains `stage`, `step`, `reason`, `unknown_class`,
 escape, generated-file authority, conflicting hunks, unauthorized proposals,
 and rollback mismatches fail closed.
 
+An optional platform observation can bind a release audit to an external
+GitHub API result. The external `immutable` value is authoritative over any
+self-authored release-manifest claim. Therefore
+`external_immutable=false` plus `self_authored_immutable=true` is the canonical
+`REFUTED` case `EXTERNAL_IMMUTABILITY_CONTRADICTION`.
+
 ## Fixed contract
 
 The intent and denominator contract have exactly 12 cells and exactly 12
 activities, bound one-to-one. `FOUNDATION`, `COHERENCE`, and `REGRESSION` each
 contain four cells; `DRIVER`, `OUTCOME`, and `GUARDRAIL` each contain four.
 The fixture oracle exercises three normal, three `UNKNOWN`, and six `REFUTED`
-cases.
+cases, including the canonical external-platform contradiction. Each case
+records exact changed-path, hunk, replay, and rollback comparison counts.
 
 The CI receipt records exact bundle file count/bytes, changed paths/hunks,
 replay and rollback comparisons/mismatches, build/test/conformance wall time,
@@ -78,10 +85,17 @@ the improvement state is `UNKNOWN`.
 The public bootstrap `main` commit contained only `.gitignore`, `LICENSE`, and
 this README. Substantive implementation is carried by one pull request.
 GitHub Actions is the only validation authority and uses Go 1.27. The
-annotated `v0.1.0` release is immutable and publishes the source archive,
-release manifest, CI conformance bundle, and SHA-256 digests.
+annotated `v0.1.0` release is retained as failed evidence because the GitHub
+API reported `isImmutable=false`, despite its self-authored manifest claim.
+It is not deleted, edited, or reused. The corrected product release is the
+annotated `v0.1.1` release, created only after GitHub repository immutable
+releases were enabled. Its source archive, release manifest, CI conformance
+bundle, and SHA-256 digests are the only release-success evidence.
 Failed CI/release attempts remain as append-only counterexamples in
 [`docs/counterexamples/release-failures-v1.json`](docs/counterexamples/release-failures-v1.json).
+The three post-PR direct-main commits are preserved there as
+`DEVELOPMENT_PROCESS_DIRECT_MAIN` `REFUTED` events and are not counted as
+successful development process evidence.
 
 The existing portfolio already covers candidate selection, counterfactual
 evaluation, semantic mutation, adoption transactions, and rollback policy.

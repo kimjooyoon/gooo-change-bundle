@@ -4,6 +4,11 @@
   "delete_operations": 0,
   "recreate_operations": 0,
   "purpose": "Preserve failed CI and release attempts as counterexamples; a later green run does not erase them.",
+  "development_process_refutations": [
+    {"commit_sha":"5e370da7a36ac1cae339825a6c4c9cc52c3e76b6","state":"REFUTED","code":"DEVELOPMENT_PROCESS_DIRECT_MAIN","reason":"direct main commit after PR #1 merge"},
+    {"commit_sha":"51600eac0abc92edb0883b5cff15b31d27a006d6","state":"REFUTED","code":"DEVELOPMENT_PROCESS_DIRECT_MAIN","reason":"direct main commit after PR #1 merge"},
+    {"commit_sha":"3d53c9ada1371b8c97eb0ca582715f0d47486bc9","state":"REFUTED","code":"DEVELOPMENT_PROCESS_DIRECT_MAIN","reason":"direct main commit after PR #1 merge"}
+  ],
   "failures": [
     {"run_id":33395251362,"kind":"CI","head_sha":"0466828d80b4303d700b49aa7b5c119eb3cc5c3c","code":"UNFORMATTED_GO_SOURCES","resolution":"FORMATTER_ONLY_CORRECTION"},
     {"run_id":33395373591,"kind":"CI","head_sha":"8e40f548b9b0d927ca801e52d0410c621d057462","code":"THUNK_COUNT_COMPILE_ERROR","resolution":"VARIABLE_NAME_CORRECTION"},
@@ -16,4 +21,3 @@
     {"run_id":33396591686,"kind":"IMMUTABLE_RELEASE","head_sha":"2d98537d1d6d4ff96fc70c98247660990b78191c","code":"ANNOTATED_TAG_PEEL_REFERENCE","resolution":"TAG_EXPLICIT_WORKFLOW_DISPATCH"}
   ]
 }
-

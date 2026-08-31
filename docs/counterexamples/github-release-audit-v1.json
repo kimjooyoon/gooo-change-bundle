@@ -1,0 +1,24 @@
+{
+  "schema": "gooo/change-bundle/github-release-audit/v1",
+  "authority": "external_github_api",
+  "repository": "kimjooyoon/gooo-change-bundle",
+  "immutable_releases_setting": {"enabled": true, "enforced_by_owner": false},
+  "releases": [
+    {
+      "tag": "v0.1.0",
+      "release_id": 379775534,
+      "is_immutable": false,
+      "state": "REFUTED",
+      "code": "SELF_ASSERTED_IMMUTABILITY_CONTRADICTED_BY_PLATFORM",
+      "annotated_tag_object": "ea288b0f07b89faca3ba3725a54c316771ccd9cf",
+      "target_commit": "2d98537d1d6d4ff96fc70c98247660990b78191c",
+      "assets": [
+        {"id":538025183,"name":"gooo-change-bundle-v0.1.0.tar.gz","size":25093,"digest":"sha256:064d58cf42437651b1210c81f184909d0cfb8d352d62f335fe4c4ae1a66c1685"},
+        {"id":538025184,"name":"gooo-change-bundle-ci-v0.1.0.tar.gz","size":4675,"digest":"sha256:9722538ad2f71b429c7c857fb3ad18c909c6b9acfb0353b56e4c8c3f15775a51"},
+        {"id":538025185,"name":"release-manifest.json","size":848,"digest":"sha256:5dabb48804a52e4d03cfe98cf8b230db62252da3a534e108efd992d15c2e1a68"},
+        {"id":538025186,"name":"ci-metrics.json","size":641,"digest":"sha256:a8fb6c30aa14c8d8b4187fd093c95aad2321ed4be4ec26e556b21b09125387c8"},
+        {"id":538025187,"name":"SHA256SUMS","size":371,"digest":"sha256:447d3d48b3dd33e185b51f4b48b24696848a5a233505c1d608636275b4f2998a"}
+      ]
+    }
+  ]
+}

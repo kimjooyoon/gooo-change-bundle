@@ -6,6 +6,7 @@
   "fixed": true,
   "proof_buckets": {"FOUNDATION": 4, "COHERENCE": 4, "REGRESSION": 4},
   "indicator_buckets": {"DRIVER": 4, "OUTCOME": 4, "GUARDRAIL": 4},
+  "platform_precedence": {"authoritative_source":"github_api_immutable","non_authoritative_source":"self_authored_manifest","refuted_when":"external_false_self_authored_true"},
   "activities": [
     {"ordinal":1,"id":"FOUNDATION_INPUT_BINDING","proof_choice":"FOUNDATION","indicator_class":"DRIVER","input":"source_tree_digest","output":"exact_preimage","edge":"input->bound"},
     {"ordinal":2,"id":"FOUNDATION_AUTHORITY_CEILING","proof_choice":"FOUNDATION","indicator_class":"OUTCOME","input":"authority_receipt","output":"zero_authority","edge":"receipt->ceiling"},
@@ -18,7 +19,6 @@
     {"ordinal":9,"id":"REGRESSION_CONFLICT_REJECTION","proof_choice":"REGRESSION","indicator_class":"GUARDRAIL","input":"conflicting_hunks","output":"refuted","edge":"conflict->refutation"},
     {"ordinal":10,"id":"REGRESSION_ROLLBACK_ROUND_TRIP","proof_choice":"REGRESSION","indicator_class":"DRIVER","input":"rollback_bundle","output":"preimage_restored","edge":"rollback->preimage"},
     {"ordinal":11,"id":"REGRESSION_REPLAY_BYTE_EQUALITY","proof_choice":"REGRESSION","indicator_class":"OUTCOME","input":"replay","output":"byte_equal","edge":"replay->equality"},
-    {"ordinal":12,"id":"REGRESSION_UNKNOWN_TUPLE","proof_choice":"REGRESSION","indicator_class":"GUARDRAIL","input":"missing_observation","output":"unknown_tuple","edge":"missing->unknown"}
+    {"ordinal":12,"id":"REGRESSION_EXTERNAL_PLATFORM_PRECEDENCE","proof_choice":"REGRESSION","indicator_class":"GUARDRAIL","input":"external_github_immutable","output":"refuted_over_self_authored_claim","edge":"platform->precedence"}
   ]
 }
-
