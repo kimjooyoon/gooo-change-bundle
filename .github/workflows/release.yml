@@ -3,18 +3,33 @@ name: Immutable release
 on:
   push:
     tags: ['v*.*.*']
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Existing annotated release tag to publish'
+        required: true
+        default: 'v0.1.0'
 
 permissions:
   contents: write
 
 jobs:
   release:
-    if: github.ref_name == 'v0.1.0'
+    if: github.event_name == 'workflow_dispatch' || github.ref_name == 'v0.1.0'
+    env:
+      RELEASE_TAG: ${{ inputs.tag_name || github.ref_name }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Checkout requested immutable tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --force origin "refs/tags/${RELEASE_TAG}:refs/tags/${RELEASE_TAG}"
+          git checkout --detach "refs/tags/${RELEASE_TAG}"
+          test "$(git cat-file -t "refs/tags/${RELEASE_TAG}")" = tag
       - uses: actions/setup-go@v5
         with:
           go-version: '1.27.x'
@@ -32,8 +47,10 @@ jobs:
             bash scripts/conformance.sh "$run/gooo-change-bundle" "$run"
           tar --exclude=.git -czf "$run/gooo-change-bundle-v0.1.0.tar.gz" .
           tar -czf "$run/gooo-change-bundle-ci-v0.1.0.tar.gz" -C "$run" ci-metrics.json bundle-one
-          commit=$(git rev-parse HEAD)
-          tag_object=$(git rev-parse "$GITHUB_REF^{tag}")
+          release_tag="${RELEASE_TAG}"
+          commit=$(git rev-list -1 "refs/tags/${release_tag}^{commit}")
+          tag_object=$(git for-each-ref --format='%(objectname)' "refs/tags/${release_tag}")
+          test "$(git cat-file -t "$tag_object")" = tag
           source_asset="$run/gooo-change-bundle-v0.1.0.tar.gz"
           ci_asset="$run/gooo-change-bundle-ci-v0.1.0.tar.gz"
           metrics_asset="$run/ci-metrics.json"
@@ -48,7 +65,7 @@ jobs:
       - name: Publish immutable release assets
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.1.0
+          tag_name: ${{ inputs.tag_name || github.ref_name }}
           name: v0.1.0
           prerelease: false
           make_latest: true
