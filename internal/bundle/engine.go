@@ -375,7 +375,7 @@ func validateChanges(inputs safetyInputs) ([]TargetEntry, []ProposalChange, []Fi
 		if hunkCount == 0 {
 			hunkCount = 1
 		}
-		targets = append(targets, TargetEntry{Path: change.Path, Operation: change.Operation, PreimageDigest: change.PreimageDigest, PostimageDigest: change.PostimageDigest, HunkCount: thunkCount})
+		targets = append(targets, TargetEntry{Path: change.Path, Operation: change.Operation, PreimageDigest: change.PreimageDigest, PostimageDigest: change.PostimageDigest, HunkCount: hunkCount})
 	}
 	return targets, changes, findings
 }
