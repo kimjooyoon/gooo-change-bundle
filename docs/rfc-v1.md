@@ -40,6 +40,12 @@ claim carries the six operational coordinates required by the Gooo protocol.
 Resolution precedence is `REFUTED > UNKNOWN > CLOSED`, even when an unknown
 finding and a refutation coexist.
 
+For release audits, an external GitHub API observation is authoritative over
+a self-authored release manifest. `external_immutable=false` together with a
+self-authored `immutable=true` claim is a canonical `REFUTED` contradiction;
+the self-authored claim cannot upgrade the external state. The canonical
+finding is `EXTERNAL_IMMUTABILITY_CONTRADICTION`.
+
 ## Metrics
 
 CI owns environment-dependent wall time and peak RSS. It emits integer metrics
@@ -48,4 +54,3 @@ comparisons/mismatches, executed/reused/skipped/not-observed tests,
 Go/Gooo physical lines, and files/directories. Product and CI authority fields
 are always `repository_writes=0`, `local_test_executions=0`, and
 `cross_project_required_gates=0`.
-

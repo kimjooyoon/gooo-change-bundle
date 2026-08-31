@@ -1,6 +1,7 @@
 package bundle
 
 import (
+	"bytes"
 	"encoding/base64"
 	"encoding/json"
 	"os"
@@ -30,10 +31,23 @@ func TestFixtureOracleHasAtLeastThreeCasesPerResolutionClass(t *testing.T) {
 		t.Fatal(err)
 	}
 	var oracle struct {
-		Schema string `json:"schema"`
-		Cases  []struct {
-			Class    string `json:"class"`
-			Expected string `json:"expected"`
+		Schema             string `json:"schema"`
+		ExternalPrecedence struct {
+			AuthoritativeSource    string `json:"authoritative_source"`
+			NonAuthoritativeSource string `json:"non_authoritative_source"`
+			RefutedCase            string `json:"refuted_case"`
+		} `json:"external_precedence"`
+		Cases []struct {
+			ID                  string `json:"id"`
+			Class               string `json:"class"`
+			Expected            string `json:"expected"`
+			Path                string `json:"path"`
+			ChangedPaths        int    `json:"changed_paths"`
+			ChangedHunks        int    `json:"changed_hunks"`
+			ReplayComparisons   int    `json:"replay_comparisons"`
+			ReplayMismatches    int    `json:"replay_mismatches"`
+			RollbackComparisons int    `json:"rollback_comparisons"`
+			RollbackMismatches  int    `json:"rollback_mismatches"`
 		} `json:"cases"`
 	}
 	if err := json.Unmarshal(data, &oracle); err != nil {
@@ -42,12 +56,25 @@ func TestFixtureOracleHasAtLeastThreeCasesPerResolutionClass(t *testing.T) {
 	if oracle.Schema != "gooo/change-bundle/fixture-oracle/v1" || len(oracle.Cases) != FixedCells {
 		t.Fatalf("fixture oracle cardinality = %d", len(oracle.Cases))
 	}
+	if oracle.ExternalPrecedence.AuthoritativeSource != "github_api_immutable" || oracle.ExternalPrecedence.NonAuthoritativeSource != "self_authored_manifest" || oracle.ExternalPrecedence.RefutedCase != "refuted-platform-immutability" {
+		t.Fatalf("fixture oracle external precedence is not authoritative: %+v", oracle.ExternalPrecedence)
+	}
 	counts := map[string]int{}
+	seenExternalCase := false
 	for _, item := range oracle.Cases {
 		counts[item.Class]++
 		if item.Expected != item.Class && !(item.Class == "NORMAL" && item.Expected == DecisionClosed) {
 			t.Fatalf("fixture %v has inconsistent expected state", item)
 		}
+		if item.ChangedPaths != 1 || item.ChangedHunks < 1 || item.ReplayComparisons != 13 || item.ReplayMismatches != 0 || item.RollbackComparisons != 1 || (item.Class == "NORMAL" && item.RollbackMismatches != 0) || (item.Class != "NORMAL" && item.RollbackMismatches != 1) {
+			t.Fatalf("fixture %v has inconsistent exact metrics", item)
+		}
+		if item.ID == "refuted-platform-immutability" {
+			seenExternalCase = item.Path == "github://kimjooyoon/gooo-change-bundle/releases/tag/v0.1.0"
+		}
+	}
+	if !seenExternalCase {
+		t.Fatal("canonical external immutability REFUTED case is missing")
 	}
 	if counts["NORMAL"] < 3 || counts["UNKNOWN"] < 3 || counts["REFUTED"] < 3 {
 		t.Fatalf("fixture classes lack minimum cardinality: %+v", counts)
@@ -77,6 +104,42 @@ func TestNormalMaterializationNeverWritesInputAndRoundTrips(t *testing.T) {
 	}
 	if _, ok := result.Files["bundle-manifest.json"]; !ok {
 		t.Fatal("result did not retain the bundle manifest")
+	}
+}
+
+func TestExternalPlatformImmutabilityOverridesSelfAuthoredClaim(t *testing.T) {
+	root := testSource(t, "before\n")
+	proposalPath, authorityPath := testApprovalChain(t, root, "app.txt", OperationModify, []byte("after\n"), nil)
+	digest, err := ComputeSourceDigest(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	observationPath := filepath.Join(t.TempDir(), "platform-observation.json")
+	writeTestJSON(t, observationPath, observation{
+		SourceTreeObservable: true,
+		PlatformRelease: &platformReleaseObservation{
+			Schema: PlatformObservationSchema, Provider: "github", Repository: "kimjooyoon/gooo-change-bundle",
+			Tag: "v0.1.0", ReleaseID: 379775534, ExternalImmutable: false, SelfAuthoredImmutable: true,
+		},
+	})
+	result := runFixtureWithObservation(t, root, digest, proposalPath, authorityPath, observationPath)
+	if result.Manifest.Decision != DecisionRefuted {
+		t.Fatalf("decision = %s, findings = %+v", result.Manifest.Decision, result.Manifest.Findings)
+	}
+	found := false
+	for _, finding := range result.Manifest.Findings {
+		if finding.Code == "EXTERNAL_IMMUTABILITY_CONTRADICTION" && finding.Path == "github://kimjooyoon/gooo-change-bundle/releases/tag/v0.1.0" {
+			found = true
+		}
+	}
+	if !found {
+		t.Fatalf("external immutability contradiction was not retained: %+v", result.Manifest.Findings)
+	}
+	if result.Manifest.Metrics.ChangedPaths != 1 || result.Manifest.Metrics.ChangedHunks != 1 || result.Manifest.Metrics.ReplayMismatches != 0 || result.Manifest.Metrics.RollbackMismatches != 1 {
+		t.Fatalf("unexpected contradiction metrics: %+v", result.Manifest.Metrics)
+	}
+	if !bytes.Contains(result.Files["human-dossier.md"], []byte("external_immutable=false")) {
+		t.Fatal("dossier omitted external platform precedence")
 	}
 }
 

@@ -8,14 +8,14 @@ on:
       tag_name:
         description: 'Existing annotated release tag to publish'
         required: true
-        default: 'v0.1.0'
+        default: 'v0.1.1'
 
 permissions:
   contents: write
 
 jobs:
   release:
-    if: github.event_name == 'workflow_dispatch' || github.ref_name == 'v0.1.0'
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
     env:
       RELEASE_TAG: ${{ inputs.tag_name || github.ref_name }}
     runs-on: ubuntu-latest
@@ -52,35 +52,72 @@ jobs:
           BUILD_WALL_MS="$build_wall_ms" TEST_WALL_MS="$test_wall_ms" \
             BUILD_RSS_KIB="$(cat "$run/build-rss")" TEST_RSS_KIB="$(cat "$run/test-rss")" \
             bash scripts/conformance.sh "$run/gooo-change-bundle" "$run"
-          tar --exclude=.git -czf "$run/gooo-change-bundle-v0.1.0.tar.gz" .
-          tar -czf "$run/gooo-change-bundle-ci-v0.1.0.tar.gz" -C "$run" ci-metrics.json bundle-one
           release_tag="${RELEASE_TAG}"
+          source_asset="$run/gooo-change-bundle-${release_tag}.tar.gz"
+          ci_asset="$run/gooo-change-bundle-ci-${release_tag}.tar.gz"
+          tar --exclude=.git -czf "$source_asset" .
+          tar -czf "$ci_asset" -C "$run" ci-metrics.json bundle-one bundle-refuted
           commit=$(git rev-list -1 "refs/tags/${release_tag}^{commit}")
           tag_object=$(git for-each-ref --format='%(objectname)' "refs/tags/${release_tag}")
           test "$(git cat-file -t "$tag_object")" = tag
-          source_asset="$run/gooo-change-bundle-v0.1.0.tar.gz"
-          ci_asset="$run/gooo-change-bundle-ci-v0.1.0.tar.gz"
           metrics_asset="$run/ci-metrics.json"
+          source_name=$(basename "$source_asset")
+          ci_name=$(basename "$ci_asset")
+          metrics_name=$(basename "$metrics_asset")
           jq -n \
             --arg schema 'gooo/change-bundle/release-manifest/v1' \
             --arg tag "$release_tag" --arg commit "$commit" --arg tag_object "$tag_object" \
+            --arg source_name "$source_name" --arg ci_name "$ci_name" --arg metrics_name "$metrics_name" \
             --arg source_digest "sha256:$(sha256sum "$source_asset" | awk '{print $1}')" --argjson source_bytes "$(stat -c '%s' "$source_asset")" \
             --arg ci_digest "sha256:$(sha256sum "$ci_asset" | awk '{print $1}')" --argjson ci_bytes "$(stat -c '%s' "$ci_asset")" \
             --arg metrics_digest "sha256:$(sha256sum "$metrics_asset" | awk '{print $1}')" --argjson metrics_bytes "$(stat -c '%s' "$metrics_asset")" \
-            '{schema:$schema,tag:$tag,commit:$commit,annotated_tag_object:$tag_object,assets:[{path:"gooo-change-bundle-v0.1.0.tar.gz",bytes:$source_bytes,digest:$source_digest},{path:"gooo-change-bundle-ci-v0.1.0.tar.gz",bytes:$ci_bytes,digest:$ci_digest},{path:"ci-metrics.json",bytes:$metrics_bytes,digest:$metrics_digest}],authority:{repository_writes:0,local_test_executions:0,cross_project_required_gates:0}}' > "$run/release-manifest.json"
+            '{schema:$schema,tag:$tag,commit:$commit,annotated_tag_object:$tag_object,assets:[{path:$source_name,bytes:$source_bytes,digest:$source_digest},{path:$ci_name,bytes:$ci_bytes,digest:$ci_digest},{path:$metrics_name,bytes:$metrics_bytes,digest:$metrics_digest}],authority:{repository_writes:0,local_test_executions:0,cross_project_required_gates:0}}' > "$run/release-manifest.json"
           (cd "$run" && sha256sum "$(basename "$source_asset")" "$(basename "$ci_asset")" "$(basename "$metrics_asset")" release-manifest.json) > "$run/SHA256SUMS"
       - name: Publish immutable release assets
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ inputs.tag_name || github.ref_name }}
-          name: v0.1.0
+          name: ${{ inputs.tag_name || github.ref_name }}
           prerelease: false
           make_latest: true
           generate_release_notes: false
-          overwrite_files: true
           files: |
-            ${{ runner.temp }}/gooo-change-bundle-release/gooo-change-bundle-v0.1.0.tar.gz
-            ${{ runner.temp }}/gooo-change-bundle-release/gooo-change-bundle-ci-v0.1.0.tar.gz
+            ${{ runner.temp }}/gooo-change-bundle-release/gooo-change-bundle-${{ inputs.tag_name || github.ref_name }}.tar.gz
+            ${{ runner.temp }}/gooo-change-bundle-release/gooo-change-bundle-ci-${{ inputs.tag_name || github.ref_name }}.tar.gz
             ${{ runner.temp }}/gooo-change-bundle-release/ci-metrics.json
             ${{ runner.temp }}/gooo-change-bundle-release/release-manifest.json
             ${{ runner.temp }}/gooo-change-bundle-release/SHA256SUMS
+
+  audit:
+    needs: release
+    if: success()
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.tag_name || github.ref_name }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Verify immutable release through GitHub API
+        shell: bash
+        run: |
+          set -euo pipefail
+          run="$RUNNER_TEMP/gooo-change-bundle-release-audit"
+          mkdir -p "$run"
+          release=$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}")
+          test "$(jq -r '.immutable' <<<"$release")" = true
+          tag_ref=$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${RELEASE_TAG}")
+          test "$(jq -r '.object.type' <<<"$tag_ref")" = tag
+          tag_object=$(jq -r '.object.sha' <<<"$tag_ref")
+          tag=$(gh api "repos/${GITHUB_REPOSITORY}/git/tags/${tag_object}")
+          jq -n \
+            --arg tag "$RELEASE_TAG" \
+            --arg tag_object "$tag_object" \
+            --arg target_commit "$(jq -r '.object.sha' <<<"$tag")" \
+            --argjson release "$(jq '{id,tag_name,immutable,assets:[.assets[] | {id,name,size,digest}]}' <<<"$release")" \
+            '{schema:"gooo/change-bundle/github-release-audit/v1",authority:"external_github_api",tag:$tag,annotated_tag_object:$tag_object,target_commit:$target_commit,release:$release}' > "$run/release-audit.json"
+          jq -e '.release.immutable == true and (.release.assets | length == 5)' "$run/release-audit.json" >/dev/null
+      - name: Upload release audit evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: gooo-change-bundle-release-audit-${{ github.run_id }}
+          path: ${{ runner.temp }}/gooo-change-bundle-release-audit/release-audit.json
+          if-no-files-found: error

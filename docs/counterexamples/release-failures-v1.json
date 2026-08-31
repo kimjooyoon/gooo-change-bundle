@@ -4,6 +4,11 @@
   "delete_operations": 0,
   "recreate_operations": 0,
   "purpose": "Preserve failed CI and release attempts as counterexamples; a later green run does not erase them.",
+  "development_process_refutations": [
+    {"commit_sha":"5e370da7a36ac1cae339825a6c4c9cc52c3e76b6","state":"REFUTED","code":"DEVELOPMENT_PROCESS_DIRECT_MAIN","reason":"direct main commit after PR #1 merge"},
+    {"commit_sha":"51600eac0abc92edb0883b5cff15b31d27a006d6","state":"REFUTED","code":"DEVELOPMENT_PROCESS_DIRECT_MAIN","reason":"direct main commit after PR #1 merge"},
+    {"commit_sha":"3d53c9ada1371b8c97eb0ca582715f0d47486bc9","state":"REFUTED","code":"DEVELOPMENT_PROCESS_DIRECT_MAIN","reason":"direct main commit after PR #1 merge"}
+  ],
   "failures": [
     {"run_id":33395251362,"kind":"CI","head_sha":"0466828d80b4303d700b49aa7b5c119eb3cc5c3c","code":"UNFORMATTED_GO_SOURCES","resolution":"FORMATTER_ONLY_CORRECTION"},
     {"run_id":33395373591,"kind":"CI","head_sha":"8e40f548b9b0d927ca801e52d0410c621d057462","code":"THUNK_COUNT_COMPILE_ERROR","resolution":"VARIABLE_NAME_CORRECTION"},
@@ -13,7 +18,10 @@
     {"run_id":33395802576,"kind":"CI","head_sha":"38d0f73345671a9f1d64aeef091e68abe1d1d59c","code":"CONFORMANCE_SELF_DIGEST_UNBOUND","resolution":"REMOVE_JQ_TRAILING_NEWLINE"},
     {"run_id":33396162875,"kind":"CI","head_sha":"f2bf82f114c848bda8e3e63fa74f8d36264b08a6","code":"CONFORMANCE_SELF_DIGEST_UNBOUND","resolution":"CANONICALIZE_NESTED_OBJECTS"},
     {"run_id":33396249119,"kind":"CI","head_sha":"f0d2d37d2a5c5a7a5ca1c8c442b793a03ddc7781","code":"TEST_EVENT_NDJSON_AGGREGATION","resolution":"JQ_SLURP_EVENT_STREAM"},
-    {"run_id":33396591686,"kind":"IMMUTABLE_RELEASE","head_sha":"2d98537d1d6d4ff96fc70c98247660990b78191c","code":"ANNOTATED_TAG_PEEL_REFERENCE","resolution":"TAG_EXPLICIT_WORKFLOW_DISPATCH"}
+    {"run_id":33396591686,"kind":"IMMUTABLE_RELEASE","head_sha":"2d98537d1d6d4ff96fc70c98247660990b78191c","code":"ANNOTATED_TAG_PEEL_REFERENCE","resolution":"TAG_EXPLICIT_WORKFLOW_DISPATCH"},
+    {"run_id":33398108464,"kind":"CI","head_sha":"1ad7a7ff94331767fb6384dfd895be516aa53706","code":"CONFORMANCE_EXTERNAL_IMMUTABILITY_ASSERTION","resolution":"JQ_FINDINGS_GENERATOR_SCOPE_CORRECTION"},
+    {"run_id":33398209509,"kind":"CI","head_sha":"d0cee0d45dc3088783bfc426cd23028e27f37dd2","code":"CONFORMANCE_EXTERNAL_IMMUTABILITY_ASSERTION","resolution":"JQ_FINDINGS_GENERATOR_SCOPE_CORRECTION"},
+    {"run_id":33398319609,"kind":"CI","head_sha":"273a3d8f197d46f21c6c17571eef791afcbd03c3","code":"CONFORMANCE_EXTERNAL_OBSERVATION_WRAPPER","resolution":"OBSERVATION_FIXTURE_WRAPPER"},
+    {"run_id":33398411751,"kind":"CI","head_sha":"0ba4870f988f830f86733097256109cd9b59014c","code":"CONFORMANCE_EXTERNAL_OBSERVATION_WRAPPER","resolution":"OBSERVATION_FIXTURE_WRAPPER"}
   ]
 }
-
