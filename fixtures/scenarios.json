@@ -1,0 +1,18 @@
+{
+  "schema": "gooo/change-bundle/fixture-oracle/v1",
+  "cases": [
+    {"id":"normal-modify","class":"NORMAL","expected":"CLOSED"},
+    {"id":"normal-add","class":"NORMAL","expected":"CLOSED"},
+    {"id":"normal-delete","class":"NORMAL","expected":"CLOSED"},
+    {"id":"unknown-direct-missing","class":"UNKNOWN","expected":"UNKNOWN"},
+    {"id":"unknown-source-unobservable","class":"UNKNOWN","expected":"UNKNOWN"},
+    {"id":"unknown-dependency-blocked","class":"UNKNOWN","expected":"UNKNOWN"},
+    {"id":"refuted-stale-preimage","class":"REFUTED","expected":"REFUTED"},
+    {"id":"refuted-path-traversal","class":"REFUTED","expected":"REFUTED"},
+    {"id":"refuted-symlink-escape","class":"REFUTED","expected":"REFUTED"},
+    {"id":"refuted-generated-file-authority","class":"REFUTED","expected":"REFUTED"},
+    {"id":"refuted-conflicting-hunks","class":"REFUTED","expected":"REFUTED"},
+    {"id":"refuted-unauthorized-or-rollback","class":"REFUTED","expected":"REFUTED"}
+  ]
+}
+

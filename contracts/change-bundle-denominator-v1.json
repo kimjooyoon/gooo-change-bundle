@@ -1,0 +1,24 @@
+{
+  "schema": "gooo/change-bundle/denominator/v1",
+  "id": "change-bundle-v1",
+  "version": "v1",
+  "cell_count": 12,
+  "fixed": true,
+  "proof_buckets": {"FOUNDATION": 4, "COHERENCE": 4, "REGRESSION": 4},
+  "indicator_buckets": {"DRIVER": 4, "OUTCOME": 4, "GUARDRAIL": 4},
+  "activities": [
+    {"ordinal":1,"id":"FOUNDATION_INPUT_BINDING","proof_choice":"FOUNDATION","indicator_class":"DRIVER","input":"source_tree_digest","output":"exact_preimage","edge":"input->bound"},
+    {"ordinal":2,"id":"FOUNDATION_AUTHORITY_CEILING","proof_choice":"FOUNDATION","indicator_class":"OUTCOME","input":"authority_receipt","output":"zero_authority","edge":"receipt->ceiling"},
+    {"ordinal":3,"id":"FOUNDATION_OUTPUT_ISOLATION","proof_choice":"FOUNDATION","indicator_class":"GUARDRAIL","input":"caller_output","output":"no_source_write","edge":"output->isolation"},
+    {"ordinal":4,"id":"FOUNDATION_DETERMINISTIC_MANIFEST","proof_choice":"FOUNDATION","indicator_class":"DRIVER","input":"source_tree","output":"sorted_manifest","edge":"tree->manifest"},
+    {"ordinal":5,"id":"COHERENCE_PATCH_PREIMAGE","proof_choice":"COHERENCE","indicator_class":"OUTCOME","input":"target_preimage","output":"exact_patch","edge":"preimage->patch"},
+    {"ordinal":6,"id":"COHERENCE_POSTIMAGE_DIGEST","proof_choice":"COHERENCE","indicator_class":"GUARDRAIL","input":"target_postimage","output":"postimage_digest","edge":"postimage->digest"},
+    {"ordinal":7,"id":"COHERENCE_SEMANTIC_IR","proof_choice":"COHERENCE","indicator_class":"DRIVER","input":"change_intent","output":"semantic_ir","edge":"intent->ir"},
+    {"ordinal":8,"id":"COHERENCE_GENERATED_EVALUATOR","proof_choice":"COHERENCE","indicator_class":"OUTCOME","input":"semantic_ir","output":"generated_evaluator","edge":"ir->evaluator"},
+    {"ordinal":9,"id":"REGRESSION_CONFLICT_REJECTION","proof_choice":"REGRESSION","indicator_class":"GUARDRAIL","input":"conflicting_hunks","output":"refuted","edge":"conflict->refutation"},
+    {"ordinal":10,"id":"REGRESSION_ROLLBACK_ROUND_TRIP","proof_choice":"REGRESSION","indicator_class":"DRIVER","input":"rollback_bundle","output":"preimage_restored","edge":"rollback->preimage"},
+    {"ordinal":11,"id":"REGRESSION_REPLAY_BYTE_EQUALITY","proof_choice":"REGRESSION","indicator_class":"OUTCOME","input":"replay","output":"byte_equal","edge":"replay->equality"},
+    {"ordinal":12,"id":"REGRESSION_UNKNOWN_TUPLE","proof_choice":"REGRESSION","indicator_class":"GUARDRAIL","input":"missing_observation","output":"unknown_tuple","edge":"missing->unknown"}
+  ]
+}
+

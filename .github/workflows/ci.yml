@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.x'
+      - name: Verify format, build, test, and conformance
+        shell: bash
+        run: |
+          set -euo pipefail
+          run="$RUNNER_TEMP/gooo-change-bundle"
+          mkdir -p "$run"
+          before=$(git status --porcelain)
+          if [ -n "$before" ]; then echo "checkout is not clean" >&2; exit 1; fi
+          if [ -n "$(gofmt -l $(find . -type f -name '*.go' -not -path './.git/*'))" ]; then
+            echo "unformatted Go files" >&2
+            exit 1
+          fi
+          start=$(date +%s%3N)
+          /usr/bin/time -f '%M' -o "$run/build-rss" go build -o "$run/gooo-change-bundle" ./cmd/gooo-change-bundle
+          end=$(date +%s%3N)
+          build_wall_ms=$((end-start))
+          go vet ./...
+          start=$(date +%s%3N)
+          /usr/bin/time -f '%M' -o "$run/test-rss" go test -json ./... > "$run/test-events.json"
+          end=$(date +%s%3N)
+          test_wall_ms=$((end-start))
+          BUILD_WALL_MS="$build_wall_ms" TEST_WALL_MS="$test_wall_ms" \
+            BUILD_RSS_KIB="$(cat "$run/build-rss")" TEST_RSS_KIB="$(cat "$run/test-rss")" \
+            bash scripts/conformance.sh "$run/gooo-change-bundle" "$run"
+          after=$(git status --porcelain)
+          if [ "$before" != "$after" ]; then
+            echo "validation changed the repository" >&2
+            git diff --exit-code
+            exit 1
+          fi
+      - name: Upload human metrics and conformance bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: gooo-change-bundle-ci-${{ github.run_id }}
+          path: ${{ runner.temp }}/gooo-change-bundle
+          if-no-files-found: error
