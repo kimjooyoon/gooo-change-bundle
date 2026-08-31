@@ -1,0 +1,18 @@
+gooo change_bundle v1
+denominator id=change-bundle-v1 cell_count=12
+authority repository_writes=0 local_test_executions=0 cross_project_required_gates=0 apply_authorized=false commit_authorized=false push_authorized=false pull_request_authorized=false merge_authorized=false
+precedence REFUTED>UNKNOWN>CLOSED
+unknown_fields stage,step,reason,unknown_class,next_operation,blocked_by
+activity ordinal=1 id=FOUNDATION_INPUT_BINDING proof_choice=FOUNDATION indicator_class=DRIVER input=source_tree_digest output=exact_preimage edge=input->bound
+activity ordinal=2 id=FOUNDATION_AUTHORITY_CEILING proof_choice=FOUNDATION indicator_class=OUTCOME input=authority_receipt output=zero_authority edge=receipt->ceiling
+activity ordinal=3 id=FOUNDATION_OUTPUT_ISOLATION proof_choice=FOUNDATION indicator_class=GUARDRAIL input=caller_output output=no_source_write edge=output->isolation
+activity ordinal=4 id=FOUNDATION_DETERMINISTIC_MANIFEST proof_choice=FOUNDATION indicator_class=DRIVER input=source_tree output=sorted_manifest edge=tree->manifest
+activity ordinal=5 id=COHERENCE_PATCH_PREIMAGE proof_choice=COHERENCE indicator_class=OUTCOME input=target_preimage output=exact_patch edge=preimage->patch
+activity ordinal=6 id=COHERENCE_POSTIMAGE_DIGEST proof_choice=COHERENCE indicator_class=GUARDRAIL input=target_postimage output=postimage_digest edge=postimage->digest
+activity ordinal=7 id=COHERENCE_SEMANTIC_IR proof_choice=COHERENCE indicator_class=DRIVER input=change_intent output=semantic_ir edge=intent->ir
+activity ordinal=8 id=COHERENCE_GENERATED_EVALUATOR proof_choice=COHERENCE indicator_class=OUTCOME input=semantic_ir output=generated_evaluator edge=ir->evaluator
+activity ordinal=9 id=REGRESSION_CONFLICT_REJECTION proof_choice=REGRESSION indicator_class=GUARDRAIL input=conflicting_hunks output=refuted edge=conflict->refutation
+activity ordinal=10 id=REGRESSION_ROLLBACK_ROUND_TRIP proof_choice=REGRESSION indicator_class=DRIVER input=rollback_bundle output=preimage_restored edge=rollback->preimage
+activity ordinal=11 id=REGRESSION_REPLAY_BYTE_EQUALITY proof_choice=REGRESSION indicator_class=OUTCOME input=replay output=byte_equal edge=replay->equality
+activity ordinal=12 id=REGRESSION_UNKNOWN_TUPLE proof_choice=REGRESSION indicator_class=GUARDRAIL input=missing_observation output=unknown_tuple edge=missing->unknown
+
