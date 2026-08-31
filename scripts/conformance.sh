@@ -71,6 +71,7 @@ mkdir -p "$bundle_refuted"
 
 jq -e '.decision == "CLOSED" and .metrics.repository_writes == 0 and .metrics.local_test_executions == 0 and .metrics.cross_project_required_gates == 0 and .metrics.replay_mismatches == 0 and .metrics.rollback_mismatches == 0' "$bundle_one/bundle-manifest.json" >/dev/null
 diff -ru "$bundle_one" "$bundle_two" >/dev/null
+jq '{decision, matching: any(.findings[]; .code == "EXTERNAL_IMMUTABILITY_CONTRADICTION" and .path == "github://kimjooyoon/gooo-change-bundle/releases/tag/v0.1.0"), metrics: {changed_paths, changed_hunks, replay_mismatches, rollback_mismatches}}' "$bundle_refuted/bundle-manifest.json"
 jq -e '.decision == "REFUTED" and any(.findings[]; .code == "EXTERNAL_IMMUTABILITY_CONTRADICTION" and .path == "github://kimjooyoon/gooo-change-bundle/releases/tag/v0.1.0") and .metrics.changed_paths == 1 and .metrics.changed_hunks == 1 and .metrics.replay_mismatches == 0 and .metrics.rollback_mismatches == 1' "$bundle_refuted/bundle-manifest.json" >/dev/null
 jq -e '[.cases[] | select(.class == "NORMAL")] | length >= 3' fixtures/scenarios.json >/dev/null
 jq -e '[.cases[] | select(.class == "UNKNOWN")] | length >= 3' fixtures/scenarios.json >/dev/null
