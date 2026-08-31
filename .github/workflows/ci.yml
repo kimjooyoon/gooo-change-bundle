@@ -34,9 +34,15 @@ jobs:
           build_wall_ms=$((end-start))
           go vet ./...
           start=$(date +%s%3N)
+          set +e
           /usr/bin/time -f '%M' -o "$run/test-rss" go test -json ./... | tee "$run/test-events.json"
+          test_status=${PIPESTATUS[0]}
+          set -e
+          echo "go test exit status: $test_status"
+          if [ "$test_status" -ne 0 ]; then exit "$test_status"; fi
           end=$(date +%s%3N)
           test_wall_ms=$((end-start))
+          echo "starting conformance harness"
           BUILD_WALL_MS="$build_wall_ms" TEST_WALL_MS="$test_wall_ms" \
             BUILD_RSS_KIB="$(cat "$run/build-rss")" TEST_RSS_KIB="$(cat "$run/test-rss")" \
             bash scripts/conformance.sh "$run/gooo-change-bundle" "$run"
