@@ -16,6 +16,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: '1.27.x'
+          cache: false
       - name: Verify format, build, test, and conformance
         shell: bash
         run: |
@@ -45,7 +46,7 @@ jobs:
           echo "starting conformance harness"
           BUILD_WALL_MS="$build_wall_ms" TEST_WALL_MS="$test_wall_ms" \
             BUILD_RSS_KIB="$(cat "$run/build-rss")" TEST_RSS_KIB="$(cat "$run/test-rss")" \
-            bash -x scripts/conformance.sh "$run/gooo-change-bundle" "$run"
+            bash scripts/conformance.sh "$run/gooo-change-bundle" "$run"
           after=$(git status --porcelain)
           if [ "$before" != "$after" ]; then
             echo "validation changed the repository" >&2
