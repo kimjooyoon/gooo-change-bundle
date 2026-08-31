@@ -60,6 +60,7 @@ conformance_wall_ms=$((end-start))
   --authority "$authority" --intent "$intent" \
   --contract contracts/change-bundle-denominator-v1.json --out "$bundle_two" > "$run/materialize-two.json"
 
+jq '{decision,metrics,findings,unknowns}' "$bundle_one/bundle-manifest.json"
 jq -e '.decision == "CLOSED" and .metrics.repository_writes == 0 and .metrics.local_test_executions == 0 and .metrics.cross_project_required_gates == 0 and .metrics.replay_mismatches == 0 and .metrics.rollback_mismatches == 0' "$bundle_one/bundle-manifest.json" >/dev/null
 diff -ru "$bundle_one" "$bundle_two" >/dev/null
 jq -e '[.cases[] | select(.class == "NORMAL")] | length >= 3' fixtures/scenarios.json >/dev/null
