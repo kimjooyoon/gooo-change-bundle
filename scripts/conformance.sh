@@ -83,9 +83,9 @@ test_rss_kib=${TEST_RSS_KIB:-0}
 peak_rss_kib=$((build_rss_kib > test_rss_kib ? build_rss_kib : test_rss_kib))
 peak_rss_kib=$((peak_rss_kib > conformance_rss_kib ? peak_rss_kib : conformance_rss_kib))
 
-tests_executed=$(jq '[.[] | select(.Test != null and .Action == "pass" and (.Cached != true))] | length' "$run/test-events.json")
-tests_reused=$(jq '[.[] | select(.Test != null and .Action == "pass" and .Cached == true)] | length' "$run/test-events.json")
-tests_skipped=$(jq '[.[] | select(.Test != null and .Action == "skip")] | length' "$run/test-events.json")
+tests_executed=$(jq -s '[.[] | select(.Test != null and .Action == "pass" and (.Cached != true))] | length' "$run/test-events.json")
+tests_reused=$(jq -s '[.[] | select(.Test != null and .Action == "pass" and .Cached == true)] | length' "$run/test-events.json")
+tests_skipped=$(jq -s '[.[] | select(.Test != null and .Action == "skip")] | length' "$run/test-events.json")
 tests_not_observed=0
 
 count_lines() {
