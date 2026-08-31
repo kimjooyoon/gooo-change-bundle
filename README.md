@@ -80,6 +80,8 @@ this README. Substantive implementation is carried by one pull request.
 GitHub Actions is the only validation authority and uses Go 1.27. The
 annotated `v0.1.0` release is immutable and publishes the source archive,
 release manifest, CI conformance bundle, and SHA-256 digests.
+Failed CI/release attempts remain as append-only counterexamples in
+[`docs/counterexamples/release-failures-v1.json`](docs/counterexamples/release-failures-v1.json).
 
 The existing portfolio already covers candidate selection, counterfactual
 evaluation, semantic mutation, adoption transactions, and rollback policy.

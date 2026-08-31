@@ -1,0 +1,19 @@
+{
+  "schema": "gooo/change-bundle/counterexample/v1",
+  "append_only": true,
+  "delete_operations": 0,
+  "recreate_operations": 0,
+  "purpose": "Preserve failed CI and release attempts as counterexamples; a later green run does not erase them.",
+  "failures": [
+    {"run_id":33395251362,"kind":"CI","head_sha":"0466828d80b4303d700b49aa7b5c119eb3cc5c3c","code":"UNFORMATTED_GO_SOURCES","resolution":"FORMATTER_ONLY_CORRECTION"},
+    {"run_id":33395373591,"kind":"CI","head_sha":"8e40f548b9b0d927ca801e52d0410c621d057462","code":"THUNK_COUNT_COMPILE_ERROR","resolution":"VARIABLE_NAME_CORRECTION"},
+    {"run_id":33395436213,"kind":"CI","head_sha":"70161d65c104976eeee4b82151ea0ece90ea6d82","code":"THUNK_COUNT_COMPILE_ERROR","resolution":"APPEND_SITE_CORRECTION"},
+    {"run_id":33395529719,"kind":"CI","head_sha":"2ed3ab8debaa58d5da0f3bba7c47151c3e69d9a1","code":"CONFORMANCE_SELF_DIGEST_UNBOUND","resolution":"EXPOSE_TEST_AND_HARNESS_LOGS"},
+    {"run_id":33395614273,"kind":"CI","head_sha":"29f7ae2874b91bd9434285f67196192ef3f499cc","code":"CONFORMANCE_SELF_DIGEST_UNBOUND","resolution":"EXPOSE_HARNESS_DIAGNOSTICS"},
+    {"run_id":33395802576,"kind":"CI","head_sha":"38d0f73345671a9f1d64aeef091e68abe1d1d59c","code":"CONFORMANCE_SELF_DIGEST_UNBOUND","resolution":"REMOVE_JQ_TRAILING_NEWLINE"},
+    {"run_id":33396162875,"kind":"CI","head_sha":"f2bf82f114c848bda8e3e63fa74f8d36264b08a6","code":"CONFORMANCE_SELF_DIGEST_UNBOUND","resolution":"CANONICALIZE_NESTED_OBJECTS"},
+    {"run_id":33396249119,"kind":"CI","head_sha":"f0d2d37d2a5c5a7a5ca1c8c442b793a03ddc7781","code":"TEST_EVENT_NDJSON_AGGREGATION","resolution":"JQ_SLURP_EVENT_STREAM"},
+    {"run_id":33396591686,"kind":"IMMUTABLE_RELEASE","head_sha":"2d98537d1d6d4ff96fc70c98247660990b78191c","code":"ANNOTATED_TAG_PEEL_REFERENCE","resolution":"TAG_EXPLICIT_WORKFLOW_DISPATCH"}
+  ]
+}
+
