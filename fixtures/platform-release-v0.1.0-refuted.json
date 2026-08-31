@@ -1,9 +1,12 @@
 {
-  "schema": "gooo/change-bundle/platform-observation/v1",
-  "provider": "github",
-  "repository": "kimjooyoon/gooo-change-bundle",
-  "tag": "v0.1.0",
-  "release_id": 379775534,
-  "external_immutable": false,
-  "self_authored_immutable": true
+  "source_tree_observable": true,
+  "platform_release": {
+    "schema": "gooo/change-bundle/platform-observation/v1",
+    "provider": "github",
+    "repository": "kimjooyoon/gooo-change-bundle",
+    "tag": "v0.1.0",
+    "release_id": 379775534,
+    "external_immutable": false,
+    "self_authored_immutable": true
+  }
 }
