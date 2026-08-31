@@ -3,7 +3,6 @@ package bundle
 import (
 	"bytes"
 	"encoding/base64"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -373,7 +372,7 @@ func validateChanges(inputs safetyInputs) ([]TargetEntry, []ProposalChange, []Fi
 	targets := make([]TargetEntry, 0, len(changes))
 	for _, change := range changes {
 		hunkCount := len(change.Hunks)
-		if thunkCount == 0 {
+		if hunkCount == 0 {
 			hunkCount = 1
 		}
 		targets = append(targets, TargetEntry{Path: change.Path, Operation: change.Operation, PreimageDigest: change.PreimageDigest, PostimageDigest: change.PostimageDigest, HunkCount: thunkCount})
