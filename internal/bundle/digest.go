@@ -49,14 +49,14 @@ func digestWithoutField(path, field string) (string, error) {
 }
 
 func digestRawWithoutField(data []byte, field string) (string, error) {
-	var object map[string]json.RawMessage
+	var object map[string]any
 	if err := json.Unmarshal(data, &object); err != nil {
 		return "", err
 	}
 	if _, ok := object[field]; !ok {
 		return "", fmt.Errorf("missing self-digest field %q", field)
 	}
-	object[field] = json.RawMessage(`""`)
+	object[field] = ""
 	return DigestValue(object)
 }
 
