@@ -1,0 +1,5 @@
+/.gooo-change-bundle-out/
+/dist/
+*.bundle.json
+*.patch
+
