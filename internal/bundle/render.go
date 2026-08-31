@@ -80,4 +80,3 @@ func renderDossier(intent Intent, proposal Proposal, authority AuthorityReceipt,
 	}
 	return builder.String()
 }
-

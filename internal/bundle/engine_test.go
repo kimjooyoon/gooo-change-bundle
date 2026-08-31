@@ -32,7 +32,7 @@ func TestFixtureOracleHasAtLeastThreeCasesPerResolutionClass(t *testing.T) {
 	var oracle struct {
 		Schema string `json:"schema"`
 		Cases  []struct {
-			Class string `json:"class"`
+			Class    string `json:"class"`
 			Expected string `json:"expected"`
 		} `json:"cases"`
 	}

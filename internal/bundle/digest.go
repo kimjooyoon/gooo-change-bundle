@@ -111,4 +111,3 @@ func validRelativePath(path string) bool {
 	clean := filepath.Clean(filepath.FromSlash(path))
 	return clean == filepath.FromSlash(path) && clean != "." && clean != ".." && !strings.HasPrefix(clean, ".."+string(filepath.Separator))
 }
-

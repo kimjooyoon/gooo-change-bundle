@@ -63,10 +63,10 @@ func materializeCommand(args []string) {
 		fatal(err.Error())
 	}
 	summary, err := json.Marshal(struct {
-		Decision      string `json:"decision"`
-		ChangedPaths  int    `json:"changed_paths"`
-		BundleFiles   int    `json:"bundle_files"`
-		ReplayMismatch int   `json:"replay_mismatches"`
+		Decision       string `json:"decision"`
+		ChangedPaths   int    `json:"changed_paths"`
+		BundleFiles    int    `json:"bundle_files"`
+		ReplayMismatch int    `json:"replay_mismatches"`
 	}{Decision: result.Manifest.Decision, ChangedPaths: len(result.Manifest.ChangedPaths), BundleFiles: len(result.Manifest.Artifacts), ReplayMismatch: result.Manifest.Metrics.ReplayMismatches})
 	if err != nil {
 		fatal(err.Error())
@@ -78,4 +78,3 @@ func fatal(message string) {
 	fmt.Fprintln(os.Stderr, message)
 	os.Exit(1)
 }
-

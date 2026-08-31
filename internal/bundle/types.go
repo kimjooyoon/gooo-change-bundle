@@ -1,31 +1,31 @@
 package bundle
 
 const (
-	SourceSchema        = "gooo/change-bundle/source/v1"
-	ContractSchema      = "gooo/change-bundle/denominator/v1"
-	ProposalSchema      = "gooo/change-bundle/approved-proposal/v1"
-	AuthoritySchema     = "gooo/change-bundle/authority-receipt/v1"
-	TreeManifestSchema  = "gooo/change-bundle/tree-manifest/v1"
-	IRSchema            = "gooo/change-bundle/semantic-ir/v1"
-	BundleSchema        = "gooo/change-bundle/manifest/v1"
-	PreconditionSchema  = "gooo/change-bundle/apply-precondition/v1"
-	ReplaySchema        = "gooo/change-bundle/replay/v1"
-	MetricsSchema       = "gooo/change-bundle/metrics/v1"
-	FixedCells          = 12
-	FixedActivities     = 12
-	EmptyFileDigest     = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
-	DecisionClosed      = "CLOSED"
-	DecisionUnknown     = "UNKNOWN"
-	DecisionRefuted     = "REFUTED"
-	OperationAdd        = "ADD"
-	OperationModify     = "MODIFY"
-	OperationDelete     = "DELETE"
-	ProofFoundation     = "FOUNDATION"
-	ProofCoherence      = "COHERENCE"
-	ProofRegression     = "REGRESSION"
-	IndicatorDriver     = "DRIVER"
-	IndicatorOutcome    = "OUTCOME"
-	IndicatorGuardrail  = "GUARDRAIL"
+	SourceSchema       = "gooo/change-bundle/source/v1"
+	ContractSchema     = "gooo/change-bundle/denominator/v1"
+	ProposalSchema     = "gooo/change-bundle/approved-proposal/v1"
+	AuthoritySchema    = "gooo/change-bundle/authority-receipt/v1"
+	TreeManifestSchema = "gooo/change-bundle/tree-manifest/v1"
+	IRSchema           = "gooo/change-bundle/semantic-ir/v1"
+	BundleSchema       = "gooo/change-bundle/manifest/v1"
+	PreconditionSchema = "gooo/change-bundle/apply-precondition/v1"
+	ReplaySchema       = "gooo/change-bundle/replay/v1"
+	MetricsSchema      = "gooo/change-bundle/metrics/v1"
+	FixedCells         = 12
+	FixedActivities    = 12
+	EmptyFileDigest    = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+	DecisionClosed     = "CLOSED"
+	DecisionUnknown    = "UNKNOWN"
+	DecisionRefuted    = "REFUTED"
+	OperationAdd       = "ADD"
+	OperationModify    = "MODIFY"
+	OperationDelete    = "DELETE"
+	ProofFoundation    = "FOUNDATION"
+	ProofCoherence     = "COHERENCE"
+	ProofRegression    = "REGRESSION"
+	IndicatorDriver    = "DRIVER"
+	IndicatorOutcome   = "OUTCOME"
+	IndicatorGuardrail = "GUARDRAIL"
 )
 
 type Authority struct {
@@ -66,14 +66,14 @@ type Intent struct {
 }
 
 type Contract struct {
-	Schema        string     `json:"schema"`
-	ID            string     `json:"id"`
-	Version       string     `json:"version"`
-	CellCount     int        `json:"cell_count"`
-	Fixed         bool       `json:"fixed"`
-	ProofBuckets  map[string]int `json:"proof_buckets"`
+	Schema           string         `json:"schema"`
+	ID               string         `json:"id"`
+	Version          string         `json:"version"`
+	CellCount        int            `json:"cell_count"`
+	Fixed            bool           `json:"fixed"`
+	ProofBuckets     map[string]int `json:"proof_buckets"`
 	IndicatorBuckets map[string]int `json:"indicator_buckets"`
-	Activities    []Activity `json:"activities"`
+	Activities       []Activity     `json:"activities"`
 }
 
 type Hunk struct {
@@ -105,21 +105,21 @@ type Proposal struct {
 }
 
 type AuthorityReceipt struct {
-	Schema          string `json:"schema"`
-	ReceiptID       string `json:"receipt_id"`
-	ProposalID      string `json:"proposal_id"`
-	ProposalDigest  string `json:"proposal_digest"`
-	IntentDigest    string `json:"intent_digest"`
-	Approved        bool   `json:"approved"`
-	ApprovedBy      string `json:"approved_by"`
-	RepositoryWrites          int  `json:"repository_writes"`
-	LocalTestExecutions       int  `json:"local_test_executions"`
-	CrossProjectRequiredGates int  `json:"cross_project_required_gates"`
-	ApplyAuthorized           bool `json:"apply_authorized"`
-	CommitAuthorized          bool `json:"commit_authorized"`
-	PushAuthorized            bool `json:"push_authorized"`
-	PullRequestAuthorized     bool `json:"pull_request_authorized"`
-	MergeAuthorized           bool `json:"merge_authorized"`
+	Schema                    string `json:"schema"`
+	ReceiptID                 string `json:"receipt_id"`
+	ProposalID                string `json:"proposal_id"`
+	ProposalDigest            string `json:"proposal_digest"`
+	IntentDigest              string `json:"intent_digest"`
+	Approved                  bool   `json:"approved"`
+	ApprovedBy                string `json:"approved_by"`
+	RepositoryWrites          int    `json:"repository_writes"`
+	LocalTestExecutions       int    `json:"local_test_executions"`
+	CrossProjectRequiredGates int    `json:"cross_project_required_gates"`
+	ApplyAuthorized           bool   `json:"apply_authorized"`
+	CommitAuthorized          bool   `json:"commit_authorized"`
+	PushAuthorized            bool   `json:"push_authorized"`
+	PullRequestAuthorized     bool   `json:"pull_request_authorized"`
+	MergeAuthorized           bool   `json:"merge_authorized"`
 	ReceiptDigest             string `json:"receipt_digest"`
 }
 
@@ -140,10 +140,10 @@ type TreeEntry struct {
 }
 
 type TreeManifest struct {
-	Schema        string      `json:"schema"`
-	RootPolicy    string      `json:"root_policy"`
-	Entries       []TreeEntry `json:"entries"`
-	SourceDigest  string      `json:"source_digest"`
+	Schema       string      `json:"schema"`
+	RootPolicy   string      `json:"root_policy"`
+	Entries      []TreeEntry `json:"entries"`
+	SourceDigest string      `json:"source_digest"`
 }
 
 type TargetEntry struct {
@@ -164,37 +164,37 @@ type UnknownTuple struct {
 }
 
 type Finding struct {
-	Code       string       `json:"code"`
-	State      string       `json:"state"`
-	Path       string       `json:"path,omitempty"`
-	Reason     string       `json:"reason"`
-	Unknown   *UnknownTuple `json:"unknown,omitempty"`
+	Code    string        `json:"code"`
+	State   string        `json:"state"`
+	Path    string        `json:"path,omitempty"`
+	Reason  string        `json:"reason"`
+	Unknown *UnknownTuple `json:"unknown,omitempty"`
 }
 
 type Metrics struct {
-	BundleFileCount          int   `json:"bundle_file_count"`
-	BundleBytes              int64 `json:"bundle_bytes"`
-	ChangedPaths             int   `json:"changed_paths"`
-	ChangedHunks             int   `json:"changed_hunks"`
-	ReplayComparisons        int   `json:"replay_comparisons"`
-	ReplayMismatches         int   `json:"replay_mismatches"`
-	RollbackComparisons      int   `json:"rollback_comparisons"`
-	RollbackMismatches       int   `json:"rollback_mismatches"`
-	BuildWallMS              int64 `json:"build_wall_ms"`
-	TestWallMS               int64 `json:"test_wall_ms"`
-	ConformanceWallMS        int64 `json:"conformance_wall_ms"`
-	PeakRSSKiB               int64 `json:"peak_rss_kib"`
-	TestsExecuted            int   `json:"tests_executed"`
-	TestsReused              int   `json:"tests_reused"`
-	TestsSkipped             int   `json:"tests_skipped"`
-	TestsNotObserved         int   `json:"tests_not_observed"`
-	GoPhysicalLines          int   `json:"go_physical_lines"`
-	GoooPhysicalLines        int   `json:"gooo_physical_lines"`
-	Files                    int   `json:"files"`
-	Directories              int   `json:"directories"`
-	RepositoryWrites         int   `json:"repository_writes"`
-	LocalTestExecutions      int   `json:"local_test_executions"`
-	CrossProjectRequiredGates int  `json:"cross_project_required_gates"`
+	BundleFileCount           int   `json:"bundle_file_count"`
+	BundleBytes               int64 `json:"bundle_bytes"`
+	ChangedPaths              int   `json:"changed_paths"`
+	ChangedHunks              int   `json:"changed_hunks"`
+	ReplayComparisons         int   `json:"replay_comparisons"`
+	ReplayMismatches          int   `json:"replay_mismatches"`
+	RollbackComparisons       int   `json:"rollback_comparisons"`
+	RollbackMismatches        int   `json:"rollback_mismatches"`
+	BuildWallMS               int64 `json:"build_wall_ms"`
+	TestWallMS                int64 `json:"test_wall_ms"`
+	ConformanceWallMS         int64 `json:"conformance_wall_ms"`
+	PeakRSSKiB                int64 `json:"peak_rss_kib"`
+	TestsExecuted             int   `json:"tests_executed"`
+	TestsReused               int   `json:"tests_reused"`
+	TestsSkipped              int   `json:"tests_skipped"`
+	TestsNotObserved          int   `json:"tests_not_observed"`
+	GoPhysicalLines           int   `json:"go_physical_lines"`
+	GoooPhysicalLines         int   `json:"gooo_physical_lines"`
+	Files                     int   `json:"files"`
+	Directories               int   `json:"directories"`
+	RepositoryWrites          int   `json:"repository_writes"`
+	LocalTestExecutions       int   `json:"local_test_executions"`
+	CrossProjectRequiredGates int   `json:"cross_project_required_gates"`
 }
 
 type IR struct {
@@ -229,34 +229,34 @@ type PreconditionReceipt struct {
 }
 
 type ReplayReceipt struct {
-	Schema                 string   `json:"schema"`
-	Decision               string   `json:"decision"`
-	Comparisons            int      `json:"comparisons"`
-	Mismatches             int      `json:"mismatches"`
-	ComparedArtifacts      []string `json:"compared_artifacts"`
-	RollbackComparisons    int      `json:"rollback_comparisons"`
-	RollbackMismatches     int      `json:"rollback_mismatches"`
-	PatchRoundTrip         bool     `json:"patch_round_trip"`
-	RollbackRoundTrip      bool     `json:"rollback_round_trip"`
-	InputRepositoryWrites  int      `json:"input_repository_writes"`
+	Schema                string   `json:"schema"`
+	Decision              string   `json:"decision"`
+	Comparisons           int      `json:"comparisons"`
+	Mismatches            int      `json:"mismatches"`
+	ComparedArtifacts     []string `json:"compared_artifacts"`
+	RollbackComparisons   int      `json:"rollback_comparisons"`
+	RollbackMismatches    int      `json:"rollback_mismatches"`
+	PatchRoundTrip        bool     `json:"patch_round_trip"`
+	RollbackRoundTrip     bool     `json:"rollback_round_trip"`
+	InputRepositoryWrites int      `json:"input_repository_writes"`
 }
 
 type BundleManifest struct {
-	Schema                 string        `json:"schema"`
-	Version                string        `json:"version"`
-	Decision               string        `json:"decision"`
-	SourceTreeDigest       string        `json:"source_tree_digest"`
-	IntentDigest           string        `json:"intent_digest"`
-	ProposalDigest         string        `json:"proposal_digest"`
-	AuthorityReceiptDigest string        `json:"authority_receipt_digest"`
-	PreimageTreeDigest     string        `json:"preimage_tree_digest"`
-	PostimageTreeDigest    string        `json:"postimage_tree_digest"`
-	ChangedPaths           []string      `json:"changed_paths"`
-	Findings               []Finding     `json:"findings"`
+	Schema                 string         `json:"schema"`
+	Version                string         `json:"version"`
+	Decision               string         `json:"decision"`
+	SourceTreeDigest       string         `json:"source_tree_digest"`
+	IntentDigest           string         `json:"intent_digest"`
+	ProposalDigest         string         `json:"proposal_digest"`
+	AuthorityReceiptDigest string         `json:"authority_receipt_digest"`
+	PreimageTreeDigest     string         `json:"preimage_tree_digest"`
+	PostimageTreeDigest    string         `json:"postimage_tree_digest"`
+	ChangedPaths           []string       `json:"changed_paths"`
+	Findings               []Finding      `json:"findings"`
 	Unknowns               []UnknownTuple `json:"unknowns"`
-	Artifacts              []Artifact   `json:"artifacts"`
-	Authority              Authority     `json:"authority"`
-	Metrics                Metrics       `json:"metrics"`
+	Artifacts              []Artifact     `json:"artifacts"`
+	Authority              Authority      `json:"authority"`
+	Metrics                Metrics        `json:"metrics"`
 }
 
 type Artifact struct {
@@ -271,12 +271,12 @@ type Result struct {
 }
 
 type Options struct {
-	SourceRoot     string
-	SourceDigest   string
-	ProposalPath   string
-	AuthorityPath  string
-	IntentPath     string
-	ContractPath   string
-	OutputDir      string
+	SourceRoot      string
+	SourceDigest    string
+	ProposalPath    string
+	AuthorityPath   string
+	IntentPath      string
+	ContractPath    string
+	OutputDir       string
 	ObservationPath string
 }

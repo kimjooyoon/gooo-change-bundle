@@ -35,28 +35,28 @@ type patchDocument struct {
 }
 
 type changeSummary struct {
-	Decision            string        `json:"decision"`
-	SourceTreeDigest    string        `json:"source_tree_digest"`
-	PreimageTreeDigest  string        `json:"preimage_tree_digest"`
-	PostimageTreeDigest string        `json:"postimage_tree_digest"`
-	ChangedPaths        []string      `json:"changed_paths"`
-	Targets             []TargetEntry `json:"targets"`
-	Findings            []Finding     `json:"findings"`
-	ApplyAuthorized     bool          `json:"apply_authorized"`
-	CommitAuthorized    bool          `json:"commit_authorized"`
-	PushAuthorized      bool          `json:"push_authorized"`
-	PullRequestAuthorized bool        `json:"pull_request_authorized"`
-	MergeAuthorized     bool          `json:"merge_authorized"`
+	Decision              string        `json:"decision"`
+	SourceTreeDigest      string        `json:"source_tree_digest"`
+	PreimageTreeDigest    string        `json:"preimage_tree_digest"`
+	PostimageTreeDigest   string        `json:"postimage_tree_digest"`
+	ChangedPaths          []string      `json:"changed_paths"`
+	Targets               []TargetEntry `json:"targets"`
+	Findings              []Finding     `json:"findings"`
+	ApplyAuthorized       bool          `json:"apply_authorized"`
+	CommitAuthorized      bool          `json:"commit_authorized"`
+	PushAuthorized        bool          `json:"push_authorized"`
+	PullRequestAuthorized bool          `json:"pull_request_authorized"`
+	MergeAuthorized       bool          `json:"merge_authorized"`
 }
 
 type safetyInputs struct {
-	Intent       Intent
-	Proposal     Proposal
-	Authority    AuthorityReceipt
-	ProposalDigest string
+	Intent          Intent
+	Proposal        Proposal
+	Authority       AuthorityReceipt
+	ProposalDigest  string
 	AuthorityDigest string
-	Snapshot     treeSnapshot
-	TreeObserved bool
+	Snapshot        treeSnapshot
+	TreeObserved    bool
 }
 
 func Run(options Options) (Result, error) {
