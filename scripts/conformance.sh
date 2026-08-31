@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+set -x
 
 bin=${1:?path to the built binary is required}
 run=${2:?caller-owned CI run directory is required}
