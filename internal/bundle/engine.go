@@ -183,7 +183,7 @@ func Run(options Options) (Result, error) {
 		return Result{}, err
 	}
 	core["replay-receipt.json"] = replayBytes
-	manifest, err := buildManifest(intent, proposal, authority, snapshot, post, decision, findings, unknowns, core, replay, targets)
+	manifest, err := buildManifest(intent, proposal, authority, proposalDigest, authorityDigest, snapshot, post, decision, findings, unknowns, core, replay, targets)
 	if err != nil {
 		return Result{}, err
 	}
@@ -650,7 +650,7 @@ func boolInt(value bool) int {
 	return 0
 }
 
-func buildManifest(intent Intent, proposal Proposal, authority AuthorityReceipt, snapshot, post treeSnapshot, decision string, findings []Finding, unknowns []UnknownTuple, files map[string][]byte, replay ReplayReceipt, targets []TargetEntry) (BundleManifest, error) {
+func buildManifest(intent Intent, proposal Proposal, authority AuthorityReceipt, proposalSelfDigest, authoritySelfDigest string, snapshot, post treeSnapshot, decision string, findings []Finding, unknowns []UnknownTuple, files map[string][]byte, replay ReplayReceipt, targets []TargetEntry) (BundleManifest, error) {
 	artifacts := make([]Artifact, 0, len(files))
 	var total int64
 	for _, path := range sortedKeys(files) {
@@ -659,7 +659,7 @@ func buildManifest(intent Intent, proposal Proposal, authority AuthorityReceipt,
 		total += int64(len(data))
 	}
 	metrics := Metrics{BundleFileCount: len(files), BundleBytes: total, ChangedPaths: len(targets), ChangedHunks: hunkCount(targets), ReplayComparisons: replay.Comparisons, ReplayMismatches: replay.Mismatches, RollbackComparisons: replay.RollbackComparisons, RollbackMismatches: replay.RollbackMismatches, Files: fileCount(snapshot.Manifest), Directories: directoryCount(snapshot.Manifest), RepositoryWrites: 0, LocalTestExecutions: 0, CrossProjectRequiredGates: 0}
-	return BundleManifest{Schema: BundleSchema, Version: "v1", Decision: decision, SourceTreeDigest: snapshot.Manifest.SourceDigest, IntentDigest: intent.SourceDigest, ProposalDigest: proposal.ProposalDigest, AuthorityReceiptDigest: authority.ReceiptDigest, PreimageTreeDigest: snapshot.Manifest.SourceDigest, PostimageTreeDigest: post.Manifest.SourceDigest, ChangedPaths: targetPaths(targets), Findings: findings, Unknowns: unknowns, Artifacts: artifacts, Authority: Authority{}, Metrics: metrics}, nil
+	return BundleManifest{Schema: BundleSchema, Version: "v1", Decision: decision, SourceTreeDigest: snapshot.Manifest.SourceDigest, IntentDigest: intent.SourceDigest, ProposalDigest: proposal.ProposalDigest, ProposalSelfDigestObserved: proposalSelfDigest, AuthorityReceiptDigest: authority.ReceiptDigest, AuthoritySelfDigestObserved: authoritySelfDigest, PreimageTreeDigest: snapshot.Manifest.SourceDigest, PostimageTreeDigest: post.Manifest.SourceDigest, ChangedPaths: targetPaths(targets), Findings: findings, Unknowns: unknowns, Artifacts: artifacts, Authority: Authority{}, Metrics: metrics}, nil
 }
 
 func writeArtifacts(output string, files map[string][]byte, manifest []byte) error {

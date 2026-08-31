@@ -213,19 +213,21 @@ type IR struct {
 }
 
 type PreconditionReceipt struct {
-	Schema                 string        `json:"schema"`
-	Decision               string        `json:"decision"`
-	SourceTreeDigest       string        `json:"source_tree_digest"`
-	ProposalDigest         string        `json:"proposal_digest"`
-	AuthorityReceiptDigest string        `json:"authority_receipt_digest"`
-	IntentDigest           string        `json:"intent_digest"`
-	Targets                []TargetEntry `json:"targets"`
-	InputRepositoryWrites  int           `json:"input_repository_writes"`
-	ApplyAuthorized        bool          `json:"apply_authorized"`
-	CommitAuthorized       bool          `json:"commit_authorized"`
-	PushAuthorized         bool          `json:"push_authorized"`
-	PullRequestAuthorized  bool          `json:"pull_request_authorized"`
-	MergeAuthorized        bool          `json:"merge_authorized"`
+	Schema                      string        `json:"schema"`
+	Decision                    string        `json:"decision"`
+	SourceTreeDigest            string        `json:"source_tree_digest"`
+	ProposalDigest              string        `json:"proposal_digest"`
+	ProposalSelfDigestObserved  string        `json:"proposal_self_digest_observed"`
+	AuthorityReceiptDigest      string        `json:"authority_receipt_digest"`
+	AuthoritySelfDigestObserved string        `json:"authority_self_digest_observed"`
+	IntentDigest                string        `json:"intent_digest"`
+	Targets                     []TargetEntry `json:"targets"`
+	InputRepositoryWrites       int           `json:"input_repository_writes"`
+	ApplyAuthorized             bool          `json:"apply_authorized"`
+	CommitAuthorized            bool          `json:"commit_authorized"`
+	PushAuthorized              bool          `json:"push_authorized"`
+	PullRequestAuthorized       bool          `json:"pull_request_authorized"`
+	MergeAuthorized             bool          `json:"merge_authorized"`
 }
 
 type ReplayReceipt struct {
